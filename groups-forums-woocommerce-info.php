@@ -36,6 +36,13 @@ if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+// @since 3.1.0 HPOS compatibility
+add_action( 'before_woocommerce_init', function() {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+} );
+
 class Groups_Forums_WooCommerce_Info {
 
 	/**
@@ -89,23 +96,20 @@ class Groups_Forums_WooCommerce_Info {
 			return;
 		}
 
-		$customer_orders = get_posts( array(
-			'numberposts' => -1,
-			'meta_key'	  => '_customer_user',
-			'meta_value'  => $author_id,
-			'post_type'   => 'shop_order',
-			'post_status' => array( 'wc-processing', 'wc-completed' ),
-			'order'       => 'desc',
-			'orderby'     => 'post_date'
-		) );
+		$customer_orders = wc_get_orders(
+			array(
+				'return'      => 'ids',
+				'limit'       => -1,
+				'customer_id' => $author_id,
+				'status'      => array( 'wc-processing', 'wc-completed' ),
+				'orderby'     => 'date',
+				'order'       => 'DESC',
+			)
+		);
 
 		$orders = array();
 		foreach ( $customer_orders as $o ) {
-			if ( class_exists( 'WC_Order' ) ) {
-				$orders[] = new WC_Order( $o->ID );
-			} else {
-				$orders[] = wc_get_order( $o->ID );
-			}
+			$orders[] = wc_get_order( $o );
 		}
 
 		$output .= '<div style="border: 1px solid #ccc; padding: 1em; margin: 0.62em;">';
@@ -132,7 +136,6 @@ class Groups_Forums_WooCommerce_Info {
 			printf( '<h3>Order %s</h3>', $order_link );
 
 			wc_get_template( 'order/order-details-customer.php', array( 'order' =>  $order ) );
-			woocommerce_order_details_table( $order_id );
 
 			// Backwards compatibility
 			$status       = new stdClass();
