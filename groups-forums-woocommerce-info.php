@@ -22,7 +22,7 @@
  * @since groups-forums-woocommerce-info 1.0.0
  *
  * Plugin Name: Groups Forums WooCommerce Info
- * Plugin URI: http://www.itthinx.com/plugins/groups
+ * Plugin URI: https://github.com/itthinx/groups-forums-woocommerce-info
  * Description: This WordPress plugin is an extension for Groups Forums and WooCommerce. It will show order info on topics for the topic's author. This is useful when you allow your customers to post topics and use Groups Forums as your support system.
  * Version: 2.0.0
  * Author: itthinx
@@ -31,6 +31,8 @@
  * Text Domain: groups-forums-woocommerce-info
  * Domain Path: /languages
  * License: GPLv3
+ * WC requires at least: 8.2
+ * WC tested up to: 8.4
  */
 if ( !defined( 'ABSPATH' ) ) {
 	exit;

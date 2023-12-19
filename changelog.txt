@@ -1,0 +1,9 @@
+Changelog - Groups Forums WooCommerce Info by itthinx - https://www.itthinx.com 
+
+= 2.0.0 =
+* WordPress 6.4 compatible.
+* WooCommerce 8.4 compatible.
+* WooCommerce HPOS compatible.
+* Requires at least WordPress 6.0.
+* Requires at least WooCommerce 8.2.
+* Requires at least PHP 7.4.
