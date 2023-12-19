@@ -22,19 +22,28 @@
  * @since groups-forums-woocommerce-info 1.0.0
  *
  * Plugin Name: Groups Forums WooCommerce Info
- * Plugin URI: http://www.itthinx.com/plugins/groups
+ * Plugin URI: https://github.com/itthinx/groups-forums-woocommerce-info
  * Description: This WordPress plugin is an extension for Groups Forums and WooCommerce. It will show order info on topics for the topic's author. This is useful when you allow your customers to post topics and use Groups Forums as your support system.
- * Version: 1.0.1
+ * Version: 2.0.0
  * Author: itthinx
  * Author URI: http://www.itthinx.com
  * Donate-Link: http://www.itthinx.com
  * Text Domain: groups-forums-woocommerce-info
  * Domain Path: /languages
  * License: GPLv3
+ * WC requires at least: 8.2
+ * WC tested up to: 8.4
  */
 if ( !defined( 'ABSPATH' ) ) {
 	exit;
 }
+
+// @since 3.1.0 HPOS compatibility
+add_action( 'before_woocommerce_init', function() {
+	if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+		\Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+	}
+} );
 
 class Groups_Forums_WooCommerce_Info {
 
@@ -89,23 +98,20 @@ class Groups_Forums_WooCommerce_Info {
 			return;
 		}
 
-		$customer_orders = get_posts( array(
-			'numberposts' => -1,
-			'meta_key'	  => '_customer_user',
-			'meta_value'  => $author_id,
-			'post_type'   => 'shop_order',
-			'post_status' => array( 'wc-processing', 'wc-completed' ),
-			'order'       => 'desc',
-			'orderby'     => 'post_date'
-		) );
+		$customer_orders = wc_get_orders(
+			array(
+				'return'      => 'ids',
+				'limit'       => -1,
+				'customer_id' => $author_id,
+				'status'      => array( 'wc-processing', 'wc-completed' ),
+				'orderby'     => 'date',
+				'order'       => 'DESC',
+			)
+		);
 
 		$orders = array();
 		foreach ( $customer_orders as $o ) {
-			if ( class_exists( 'WC_Order' ) ) {
-				$orders[] = new WC_Order( $o->ID );
-			} else {
-				$orders[] = wc_get_order( $o->ID );
-			}
+			$orders[] = wc_get_order( $o );
 		}
 
 		$output .= '<div style="border: 1px solid #ccc; padding: 1em; margin: 0.62em;">';
@@ -132,7 +138,6 @@ class Groups_Forums_WooCommerce_Info {
 			printf( '<h3>Order %s</h3>', $order_link );
 
 			wc_get_template( 'order/order-details-customer.php', array( 'order' =>  $order ) );
-			woocommerce_order_details_table( $order_id );
 
 			// Backwards compatibility
 			$status       = new stdClass();
