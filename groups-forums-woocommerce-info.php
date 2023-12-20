@@ -24,7 +24,7 @@
  * Plugin Name: Groups Forums WooCommerce Info
  * Plugin URI: https://github.com/itthinx/groups-forums-woocommerce-info
  * Description: This WordPress plugin is an extension for Groups Forums and WooCommerce. It will show order info on topics for the topic's author. This is useful when you allow your customers to post topics and use Groups Forums as your support system.
- * Version: 2.0.0
+ * Version: 2.0.1
  * Author: itthinx
  * Author URI: http://www.itthinx.com
  * Donate-Link: http://www.itthinx.com
@@ -120,6 +120,9 @@ class Groups_Forums_WooCommerce_Info {
 
 		ob_start();
 		foreach( $orders as $order ) {
+
+			// Removes order-again button appearing after each completed order items
+			remove_action( 'woocommerce_order_details_after_order_table', 'woocommerce_order_again_button');
 
 			if ( method_exists( $order, 'get_id' ) ) {
 				$order_id = $order->get_id();
