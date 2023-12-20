@@ -118,11 +118,11 @@ class Groups_Forums_WooCommerce_Info {
 		$output .= sprintf( '<p>Number of processing and completed orders: %d</p>', count( $orders ) );
 		$output .= '</div>';
 
+		// Removes order-again button appearing after each completed order items
+		remove_action( 'woocommerce_order_details_after_order_table', 'woocommerce_order_again_button');
+
 		ob_start();
 		foreach( $orders as $order ) {
-
-			// Removes order-again button appearing after each completed order items
-			remove_action( 'woocommerce_order_details_after_order_table', 'woocommerce_order_again_button');
 
 			if ( method_exists( $order, 'get_id' ) ) {
 				$order_id = $order->get_id();
