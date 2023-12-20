@@ -4,7 +4,7 @@ Tags: groups, groups-forums, woocommerce, itthinx
 Requires at least: 6.0
 Requires PHP: 7.4
 Tested up to: 6.4
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 
 Groups Forums WooCommerce Info <a href="https://github.com/itthinx/groups-forums-woocommerce-info">Plugin page</a>
 
